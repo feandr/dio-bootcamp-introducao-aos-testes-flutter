@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import 'widget_test.mocks.dart';
+
 @GenerateMocks([MockViaCep])
 void main() {
   group("Calcular com desconto", () {
@@ -58,12 +60,23 @@ void main() {
   });
 
   test('Retorna Cep', () async {
-
-    var body = await viaCep.retornaCEP("08830490");
+    MockMockViaCep mockMockViaCep = MockMockViaCep();
+    when(mockMockViaCep.retornaCEP("08830490"))
+        .thenAnswer((realInvocation) => Future.value({
+              "cep": "08830-490",
+              "logradouro": "Rua Gonçalves Magalhães",
+              "complemento": "",
+              "bairro": "Jardim das Bandeiras",
+              "localidade": "Mogi das Cruzes",
+              "uf": "SP",
+              "ibge": "3530607",
+              "gia": "4546",
+              "ddd": "11",
+              "siafi": "6713"
+            }));
+    var body = await mockMockViaCep.retornaCEP("08830490");
     expect(body["bairro"], equals("Jardim das Bandeiras"));
   });
 }
 
-class MockViaCep extends Mock implements ViaCep{
-
-}
+class MockViaCep extends Mock implements ViaCep {}
